@@ -24,5 +24,57 @@
             </list>
         </property>
     </bean>
+    <!-- 2. 组件扫描路径配置，让Spring 容器知道需要扫描哪些包路径下可以加载到容器中的类 -->
+    <!--     多个扫描路径配置  base-package="com.app,com.core,JUnit4" 也可以写多份,一般直接写多份 -->
+    <context:component-scan base-package="com.ssm.manager.*"/>
+
+    <!-- 启动spring事务注解, $该启用必须在springMVC中,而不能在applicationContext.xml中配置,不然事务注解无效$
+        也就是说只有这一行才能真正开启事务,单独地在类或方法上注解@Transaction只是作了事务标记而以-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- 3. 处理在类级别上的@RequestMapping注解 -->
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <!-- 多个拦截器,顺序执行 -->
+                <!-- <ref bean="SpringMVCInterceptor" /> -->
+                <!-- <ref bean="OpenSessionInViewInterceptor" /> -->
+            </list>
+        </property>
+    </bean>
+
+    <!-- 4.处理方法级别上的@RequestMapping注解 -->
+    <bean
+            class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="webBindingInitializer">
+            <bean
+                    class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+                <property name="conversionService">
+                    <bean
+                            class="org.springframework.format.support.FormattingConversionServiceFactoryBean"></bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- 5.对模型视图名称的解析，即给模型视图名称添加前后缀 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix"
+                  value="/WEB-INF/"/> <!-- 让ModelAndView("jsp/teacher/listTeachers.jsp") 从/WEB-INF/目录下开始 -->
+        <property name="suffix" value=""/>
+        <!-- <property name="suffix" value=".jsp" /> -->
+        <!-- Spring内部资源解析类 -->
+        <property name="viewClass" value="org.springframework.web.servlet.view.InternalResourceView"/>
+    </bean>
+
+    <!-- 6.异常解析器 -->
+    <bean id="simpleMappingExceptionResolver"
+          class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">jsp/common/exception</prop>
+            </props>
+        </property>
+    </bean>
 
 </beans>

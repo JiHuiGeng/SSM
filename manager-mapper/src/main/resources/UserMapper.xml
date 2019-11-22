@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssm.manager.mapper.UserMapper">
+    <resultMap id="UserMapper" type="com.ssm.manager.pojo.User">
+        <id property="user_Id" column="user_id"/>
+        <result property="user_Name" column="user_name"/>
+        <result property="user_Password" column="user_password"/>
+        <result property="user_Age" column="user_age"/>
+        <result property="user_Address" column="user_address"/>
+    </resultMap>
+
+    <select id="getUsers" resultMap="UserMapper">
+        select user_id, user_name, user_password, user_age, user_address
+        from t_user
+    </select>
+    <insert id="xxxUsers" parameterType="int">
+        INSERT INTO t_user (user_id, user_name, user_password, user_age, user_address)
+        VALUES (3, 'lisi', '123456',22,'河北省邯郸市');
+    </insert>
+</mapper>
